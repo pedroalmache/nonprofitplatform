@@ -27,9 +27,3 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# .NET
-**/bin/
-**/obj/
-*.user
-.vs/
