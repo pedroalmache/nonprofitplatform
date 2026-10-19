@@ -1,0 +1,244 @@
+.profile-main {
+  padding: clamp(2.5rem, 6vw, 4.5rem) 0 5rem;
+}
+
+.profile-panel {
+  max-width: 32rem;
+
+  h1 {
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    margin-bottom: 0.75rem;
+  }
+}
+
+.profile-picture {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+
+  h2 {
+    font-size: 1.35rem;
+  }
+
+  img {
+    width: 8rem;
+    height: 8rem;
+    object-fit: cover;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-sm);
+  }
+
+  input[type='file'] {
+    font: inherit;
+  }
+}
+
+.shared-pictures {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-border-subtle);
+
+  h2 {
+    font-size: 1.35rem;
+  }
+
+  input[type='file'] {
+    font: inherit;
+  }
+}
+
+.shared-picture-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-sm);
+  }
+
+  button {
+    min-height: 44px;
+  }
+}
+
+.account-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 1.75rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  label {
+    font-weight: 600;
+  }
+
+  input {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.6rem 0.75rem;
+    font: inherit;
+    color: var(--color-ink-primary);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-sm);
+  }
+
+  input[aria-invalid='true'] {
+    border-color: var(--color-earth-primary);
+  }
+
+  .field-error {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-earth-primary);
+  }
+}
+
+.form-error {
+  font-weight: 600;
+  color: var(--color-earth-primary);
+
+  p + p {
+    margin-top: 0.35rem;
+  }
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+
+  .btn {
+    min-height: 44px;
+    font-family: var(--font-sans);
+  }
+}
+
+.snackbar {
+  position: fixed;
+  z-index: 600;
+  left: 50%;
+  bottom: 1rem;
+  width: max-content;
+  max-width: calc(100% - 2rem);
+  margin: 0;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-ink-primary);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-sage-accent);
+  border-radius: var(--radius-sm);
+  transform: translateX(-50%);
+}
+
+.danger-zone {
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.claim-status {
+  margin-top: 1.5rem;
+  font-weight: 600;
+}
+
+.claim-account {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-canvas-subtle);
+
+  h2 {
+    font-size: 1.35rem;
+  }
+
+  .claim-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.75rem 0;
+  }
+
+  .claim-link {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--color-ink-primary);
+    overflow-wrap: anywhere;
+  }
+
+  .copy-status {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-sage-accent);
+  }
+
+  .form-actions {
+    margin-top: 0.75rem;
+  }
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.dialog-backdrop {
+  position: fixed;
+  z-index: 700;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: rgba(26, 36, 47, 0.45);
+}
+
+.dialog-panel {
+  width: min(100%, 28rem);
+  max-height: calc(100% - 2rem);
+  overflow: auto;
+  padding: 1.5rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+
+  h2 {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .form-actions {
+    margin-top: 1.25rem;
+  }
+}

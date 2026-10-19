@@ -1,0 +1,103 @@
+$bp-tablet: 768px;
+
+.photo-carousel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.carousel-figure {
+  .figure-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    padding: 0;
+    overflow: hidden;
+    background-color: var(--color-canvas-subtle);
+
+    img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      max-height: none;
+      object-fit: contain;
+      object-position: center;
+    }
+  }
+}
+
+.slide-enter {
+  z-index: 1;
+  animation: slide-fade-in 800ms ease both;
+}
+
+.slide-leave {
+  z-index: 0;
+  animation: slide-fade-out 800ms ease both;
+}
+
+@keyframes slide-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide-enter,
+  .slide-leave {
+    animation: none;
+  }
+}
+
+.carousel-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.carousel-count {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+  min-width: 6.5rem;
+}
+
+.carousel-button {
+  border: 1px solid var(--color-border-strong);
+  background-color: transparent;
+  color: var(--color-ink-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.55rem 0.9rem;
+  border-radius: var(--radius-sm);
+  min-height: 44px;
+
+  &:hover {
+    background-color: var(--color-canvas-subtle);
+  }
+}
+
+@media (min-width: $bp-tablet) {
+  .carousel-controls {
+    gap: 1rem;
+  }
+}

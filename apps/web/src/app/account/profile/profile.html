@@ -1,0 +1,353 @@
+<app-site-header [attr.inert]="deleteOpen() ? '' : null" />
+
+<main id="main-content" class="profile-main" [attr.inert]="deleteOpen() ? '' : null">
+  <div class="container">
+    <div class="profile-panel">
+      @if (loading()) {
+        <p class="section-label">Chapter account</p>
+        <h1>{{ heading() }}</h1>
+        <p class="section-intro">
+          {{ adminMode() ? 'Loading this profile.' : 'Loading your profile.' }}
+        </p>
+      } @else {
+        <p class="section-label">Chapter account</p>
+        <h1>{{ heading() }}</h1>
+        <p class="section-intro">
+          @if (adminMode()) {
+            Update this member's chapter account. First and last name are required.
+          } @else {
+            Save the name and contact details for your account. First and last name are required.
+          }
+        </p>
+
+        @if (adminMode() && claimed() === true) {
+          <p class="claim-status">This account has been claimed.</p>
+        }
+        @if (adminMode() && claimed() !== true) {
+          <section class="claim-account" aria-labelledby="claim-account-heading">
+            <h2 id="claim-account-heading">Claim this account</h2>
+            <p>
+              This account has not been claimed. Share a claim link so this member can choose a
+              password.
+            </p>
+            @if (claimUrl(); as url) {
+              <div class="claim-row">
+                <p class="claim-link" role="status">{{ url }}</p>
+                <button type="button" class="btn btn-secondary" (click)="copyClaimLink()">
+                  Copy to clipboard
+                </button>
+                @if (claimCopied()) {
+                  <p class="copy-status" role="status">Copied.</p>
+                }
+              </div>
+              @if (claimCopyError(); as message) {
+                <p class="form-error" role="alert">{{ message }}</p>
+              }
+              <p>This link is valid for one day. Generate a new one if it expires.</p>
+            }
+            @if (claimLinkError(); as message) {
+              <p class="form-error" role="alert">{{ message }}</p>
+            }
+            <div class="form-actions">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                [disabled]="generatingClaimLink()"
+                (click)="generateClaimLink()"
+              >
+                Generate claim link
+              </button>
+            </div>
+          </section>
+        }
+
+        <section class="profile-picture" aria-labelledby="profile-picture-heading">
+          <h2 id="profile-picture-heading">Profile picture</h2>
+          @if (profilePictureUrl()) {
+            <img
+              [src]="profilePictureUrl()"
+              [alt]="adminMode() ? 'Profile picture' : 'Your profile picture'"
+              width="128"
+              height="128"
+            />
+          }
+          @if (pictureErrors().length > 0) {
+            <div class="form-error" role="alert">
+              @for (message of pictureErrors(); track message) {
+                <p>{{ message }}</p>
+              }
+            </div>
+          }
+          @if (!hasProfile()) {
+            <p>
+              {{
+                adminMode()
+                  ? 'Save this name before adding a picture.'
+                  : 'Save your name before adding a picture.'
+              }}
+            </p>
+          } @else {
+            <div class="field">
+              <label for="profile-picture">Image file</label>
+              <input
+                #pictureInput
+                id="profile-picture"
+                name="profilePicture"
+                type="file"
+                accept="image/jpeg,image/png,image/gif,image/webp"
+                (change)="onPicture($event)"
+              />
+            </div>
+            <div class="form-actions">
+              <button
+                type="button"
+                class="btn btn-primary"
+                [disabled]="pictureSaving() || !selectedPicture()"
+                (click)="uploadPicture()"
+              >
+                Upload picture
+              </button>
+              @if (profilePictureUrl()) {
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  [disabled]="pictureSaving()"
+                  (click)="removePicture()"
+                >
+                  Remove picture
+                </button>
+              }
+            </div>
+          }
+        </section>
+
+        <form class="account-form" novalidate (submit)="save($event)">
+          @if (errors().length > 0) {
+            <div class="form-error" role="alert">
+              @for (message of errors(); track message) {
+                <p>{{ message }}</p>
+              }
+            </div>
+          }
+          <div class="field">
+            <label for="first-name">First name</label>
+            <input
+              id="first-name"
+              name="firstName"
+              type="text"
+              autocomplete="given-name"
+              required
+              [value]="firstName()"
+              (input)="onFirstName($event)"
+            />
+          </div>
+
+          <div class="field">
+            <label for="last-name">Last name</label>
+            <input
+              id="last-name"
+              name="lastName"
+              type="text"
+              autocomplete="family-name"
+              required
+              [value]="lastName()"
+              (input)="onLastName($event)"
+            />
+          </div>
+
+          <div class="field">
+            <label for="phone">Phone</label>
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              autocomplete="tel"
+              inputmode="tel"
+              [value]="phone()"
+              [attr.aria-invalid]="phoneError() ? 'true' : null"
+              [attr.aria-describedby]="phoneError() ? 'phone-error' : null"
+              (input)="onPhone($event)"
+              (blur)="onPhoneBlur()"
+            />
+            @if (phoneError(); as message) {
+              <p id="phone-error" class="field-error" role="alert">{{ message }}</p>
+            }
+          </div>
+
+          <div class="field">
+            <label for="profile-email">Email</label>
+            <input
+              id="profile-email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              inputmode="email"
+              [value]="email()"
+              [attr.aria-invalid]="emailError() ? 'true' : null"
+              [attr.aria-describedby]="emailError() ? 'email-error' : null"
+              (input)="onEmail($event)"
+              (blur)="onEmailBlur()"
+            />
+            @if (emailError(); as message) {
+              <p id="email-error" class="field-error" role="alert">{{ message }}</p>
+            }
+          </div>
+
+          <div class="field">
+            <label for="linkedin">LinkedIn</label>
+            <input
+              id="linkedin"
+              name="linkedin"
+              type="text"
+              [value]="linkedIn()"
+              (input)="onLinkedIn($event)"
+            />
+          </div>
+
+          <div class="field">
+            <label for="title">Title</label>
+            <input
+              id="title"
+              name="title"
+              type="text"
+              [value]="title()"
+              (input)="onTitle($event)"
+            />
+          </div>
+
+          <div class="field">
+            <label for="engineering-type">Engineering</label>
+            <input
+              id="engineering-type"
+              name="engineeringType"
+              type="text"
+              [value]="engineeringType()"
+              (input)="onEngineeringType($event)"
+            />
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" [disabled]="saving()">Save</button>
+            <button type="button" class="btn btn-secondary" (click)="signOut()">Sign out</button>
+          </div>
+        </form>
+        @if (canDelete()) {
+          <div class="danger-zone">
+            <button type="button" class="btn btn-secondary" (click)="openDelete()">Delete</button>
+          </div>
+        }
+
+        <section class="shared-pictures" aria-labelledby="shared-pictures-heading">
+          <h2 id="shared-pictures-heading">Shared pictures</h2>
+          <p>Choose one or more photos. They appear on your directory card.</p>
+          @if (!hasProfile()) {
+            <p>
+              {{
+                adminMode()
+                  ? 'Save this name before adding a picture.'
+                  : 'Save your name before adding a picture.'
+              }}
+            </p>
+          } @else {
+            @if (sharedPictureError(); as message) {
+              <p class="form-error" role="alert">{{ message }}</p>
+            }
+            @if (sharedPictures().length > 0) {
+              <ul class="shared-picture-list">
+                @for (picture of sharedPictures(); track picture.id; let index = $index) {
+                  <li>
+                    <img
+                      [src]="picture.url"
+                      [alt]="'Shared picture ' + (index + 1)"
+                      width="160"
+                      height="160"
+                    />
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      [disabled]="sharedSaving()"
+                      [attr.aria-label]="'Remove shared picture ' + (index + 1)"
+                      (click)="removeSharedPicture(picture.id)"
+                    >
+                      Remove
+                    </button>
+                  </li>
+                }
+              </ul>
+            }
+            <div class="field">
+              <label for="shared-picture">Image files</label>
+              <input
+                id="shared-picture"
+                name="sharedPicture"
+                type="file"
+                accept="image/jpeg,image/png,image/gif,image/webp"
+                multiple
+                [disabled]="sharedSaving()"
+                (change)="onSharedPicture($event)"
+              />
+            </div>
+            @if (selectedShared().length > 1) {
+              <p role="status">{{ selectedShared().length }} pictures selected.</p>
+            }
+            <div class="form-actions">
+              <button
+                type="button"
+                class="btn btn-primary"
+                [disabled]="sharedSaving() || selectedShared().length === 0"
+                (click)="uploadSharedPicture()"
+              >
+                {{ selectedShared().length === 1 ? 'Share picture' : 'Share pictures' }}
+              </button>
+            </div>
+          }
+        </section>
+      }
+    </div>
+  </div>
+</main>
+
+<app-site-footer [attr.inert]="deleteOpen() ? '' : null" />
+
+@if (deleteOpen()) {
+  <div class="dialog-backdrop">
+    <div
+      #deleteDialog
+      class="dialog-panel"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="delete-member-heading"
+      aria-describedby="delete-member-copy"
+      (keydown)="onDeleteKeydown($event)"
+    >
+      <h2 id="delete-member-heading">
+        @if (firstName().trim()) {
+          Delete {{ firstName() }}'s profile and sign-in account?
+        } @else {
+          Delete this member's profile and sign-in account?
+        }
+      </h2>
+      <p id="delete-member-copy">
+        This removes the profile and the sign-in account. Nothing is deleted until you confirm.
+      </p>
+      @if (deleteError(); as message) {
+        <p class="form-error" role="alert">{{ message }}</p>
+      }
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="closeDelete()">Cancel</button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          [disabled]="deleting()"
+          (click)="confirmDelete()"
+        >
+          Delete account
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (notice(); as message) {
+  <p class="snackbar" role="status">{{ message }}</p>
+}

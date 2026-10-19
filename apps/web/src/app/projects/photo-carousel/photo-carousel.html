@@ -1,0 +1,47 @@
+@if (current(); as photo) {
+  <section
+    class="photo-carousel"
+    [attr.aria-roledescription]="multiple() ? 'carousel' : null"
+    [attr.aria-label]="label()"
+    (mouseenter)="pauseForPointer()"
+    (mouseleave)="resumeFromPointer()"
+    (focusin)="pauseForPointer()"
+    (focusout)="resumeFromPointer()"
+  >
+    <figure class="editorial-figure carousel-figure">
+      <div class="figure-frame">
+        @for (slide of slides(); track slide.index) {
+          <img
+            animate.enter="slide-enter"
+            animate.leave="slide-leave"
+            [src]="slide.photo.src"
+            [alt]="slide.photo.alt"
+            [width]="slide.photo.width"
+            [height]="slide.photo.height"
+          />
+        }
+      </div>
+      <figcaption class="figure-caption">{{ photo.alt }}</figcaption>
+    </figure>
+
+    @if (multiple()) {
+      <div class="carousel-controls">
+        <button type="button" class="carousel-button" (click)="previous()">Previous</button>
+        <p class="carousel-count">
+          <span class="visually-hidden">Photograph</span>
+          {{ index() + 1 }} of {{ photos().length }}
+        </p>
+        <button type="button" class="carousel-button" (click)="next()">Next</button>
+        <button
+          type="button"
+          class="carousel-button"
+          (click)="togglePause()"
+          [attr.aria-pressed]="userPaused()"
+        >
+          {{ userPaused() ? 'Play' : 'Pause' }}
+          <span class="visually-hidden">automatic slideshow</span>
+        </button>
+      </div>
+    }
+  </section>
+}

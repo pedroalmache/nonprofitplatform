@@ -1,0 +1,237 @@
+<div [attr.inert]="addOpen() || editing() || removing() ? '' : null">
+  <button #addButton type="button" class="btn btn-primary" (click)="openAdd()">+ Add Event</button>
+
+  @if (loading()) {
+    <p>Loading events.</p>
+  } @else if (loadError(); as message) {
+    <p class="form-error" role="alert">{{ message }}</p>
+  } @else if (rows().length > 0) {
+    <ul class="event-list">
+      @for (row of rows(); track row.id) {
+        <li>
+          <article class="event-card" [attr.aria-labelledby]="'event-' + row.id">
+            @if (row.unavailable) {
+              <h2 [id]="'event-' + row.id">This event could not be loaded from Google Calendar.</h2>
+            } @else {
+              <h2 [id]="'event-' + row.id">{{ row.title }}</h2>
+              @if (row.dateLabel) {
+                <p>{{ row.dateLabel }}</p>
+              }
+              @if (row.timeLabel) {
+                <p>{{ row.timeLabel }}</p>
+              }
+              @if (row.location) {
+                <p>{{ row.location }}</p>
+              }
+              @if (row.meetUrl) {
+                <p>
+                  <a [href]="row.meetUrl" target="_blank" rel="noopener noreferrer">
+                    Google Meet
+                    <span class="visually-hidden"> (opens in a new tab)</span>
+                  </a>
+                </p>
+              }
+            }
+            @if (row.ended) {
+              <p>This event has ended.</p>
+            }
+            <p class="visibility-badge" [attr.data-visibility]="row.visibility">
+              {{ row.visibility === 'private' ? 'Private' : 'Public' }}
+            </p>
+            <div class="event-actions">
+              @if (canAdd(row)) {
+                <button type="button" class="btn btn-secondary" (click)="addToCalendar(row)">
+                  Add to your calendar
+                </button>
+              }
+              <button type="button" class="btn btn-secondary" (click)="openEdit(row)">
+                Edit visibility
+              </button>
+              <button type="button" class="btn btn-secondary" (click)="openRemove(row)">
+                Remove from website
+              </button>
+            </div>
+          </article>
+        </li>
+      }
+    </ul>
+  }
+</div>
+
+@if (addOpen()) {
+  <div class="dialog-backdrop">
+    <div
+      #addDialog
+      class="dialog-panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="add-event-heading"
+      (keydown)="onAddKeydown($event)"
+    >
+      <h2 id="add-event-heading">Add an event</h2>
+      <form class="account-form" novalidate (submit)="find($event)">
+        @if (addErrors().length > 0) {
+          <div class="form-error" role="alert">
+            @for (message of addErrors(); track message) {
+              <p>{{ message }}</p>
+            }
+          </div>
+        }
+        <div class="field">
+          <label for="event-link">Google Calendar Event Link</label>
+          <input
+            id="event-link"
+            name="link"
+            type="url"
+            autocomplete="off"
+            required
+            [value]="link()"
+            (input)="onLink($event)"
+          />
+        </div>
+        <fieldset class="choices">
+          <legend>Visibility</legend>
+          <label>
+            <input
+              type="radio"
+              name="visibility"
+              value="public"
+              [checked]="visibility() === 'public'"
+              (change)="chooseVisibility('public')"
+            />
+            Public
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="visibility"
+              value="private"
+              [checked]="visibility() === 'private'"
+              (change)="chooseVisibility('private')"
+            />
+            Private
+          </label>
+        </fieldset>
+        @if (preview(); as found) {
+          <div class="event-preview">
+            <h3>{{ found.title }}</h3>
+            <p>{{ found.dateLabel }}</p>
+            @if (found.timeLabel) {
+              <p>{{ found.timeLabel }}</p>
+            }
+            @if (found.location) {
+              <p>{{ found.location }}</p>
+            }
+            <p>Visibility</p>
+            <p>{{ visibility() === 'private' ? 'Private' : 'Public' }}</p>
+            @if (!found.upcoming) {
+              <p>That event has already ended.</p>
+            }
+          </div>
+        }
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="closeAdd()">Cancel</button>
+          <button type="submit" class="btn btn-secondary" [disabled]="finding() || adding()">
+            Find Event
+          </button>
+          @if (preview()?.upcoming) {
+            <button type="button" class="btn btn-primary" [disabled]="adding()" (click)="add()">
+              Add to Website
+            </button>
+          }
+        </div>
+      </form>
+    </div>
+  </div>
+}
+
+@if (editing(); as row) {
+  <div class="dialog-backdrop">
+    <div
+      #editDialog
+      class="dialog-panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="edit-visibility-heading"
+      (keydown)="onEditKeydown($event)"
+    >
+      <h2 id="edit-visibility-heading">Edit visibility</h2>
+      @if (row.title) {
+        <p>{{ row.title }}</p>
+      }
+      <form class="account-form" novalidate (submit)="saveVisibility($event)">
+        @if (editError(); as message) {
+          <p class="form-error" role="alert">{{ message }}</p>
+        }
+        <fieldset class="choices">
+          <legend>Visibility</legend>
+          <label>
+            <input
+              type="radio"
+              name="edit-visibility"
+              value="public"
+              [checked]="editVisibility() === 'public'"
+              (change)="editVisibility.set('public')"
+            />
+            Public
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="edit-visibility"
+              value="private"
+              [checked]="editVisibility() === 'private'"
+              (change)="editVisibility.set('private')"
+            />
+            Private
+          </label>
+        </fieldset>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="closeEdit()">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="savingVisibility()">
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
+
+@if (removing(); as row) {
+  <div class="dialog-backdrop">
+    <div
+      #removeDialog
+      class="dialog-panel"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="remove-event-heading"
+      aria-describedby="remove-event-copy"
+      (keydown)="onRemoveKeydown($event)"
+    >
+      <h2 id="remove-event-heading">Remove this event from the website?</h2>
+      <p id="remove-event-copy">
+        @if (row.title) {
+          {{ row.title }} will no longer be shown on the website. The Google Calendar event stays in
+          Google Calendar.
+        } @else {
+          This event will no longer be shown on the website. The Google Calendar event stays in
+          Google Calendar.
+        }
+      </p>
+      @if (removeError(); as message) {
+        <p class="form-error" role="alert">{{ message }}</p>
+      }
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="closeRemove()">Cancel</button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          [disabled]="deleting()"
+          (click)="confirmRemove()"
+        >
+          Remove from website
+        </button>
+      </div>
+    </div>
+  </div>
+}

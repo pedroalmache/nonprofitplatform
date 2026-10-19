@@ -1,0 +1,65 @@
+<app-site-header />
+
+<main id="main-content" class="claim-main">
+  <div class="container">
+    <div class="claim-panel">
+      <p class="section-label">Chapter account</p>
+      <h1>Claim your account</h1>
+      @if (claimed()) {
+        @if (errorMessage(); as message) {
+          <p class="form-error" role="alert">{{ message }}</p>
+        } @else {
+          <p class="section-intro" role="status">
+            This account is claimed. Sign in with the password you just chose.
+          </p>
+        }
+        <div class="form-actions">
+          <a class="btn btn-primary" routerLink="/login">Sign in</a>
+        </div>
+      } @else if (!linkReady()) {
+        <p class="form-error" role="alert">This claim link is invalid or has expired.</p>
+      } @else {
+        <p class="section-intro">
+          Choose a password for this account. Use at least 8 characters, with an uppercase letter, a
+          lowercase letter, a number, and a symbol.
+        </p>
+        <form class="account-form" novalidate (submit)="submit($event)">
+          @if (errorMessage(); as message) {
+            <p class="form-error" role="alert">{{ message }}</p>
+          }
+          <div class="field">
+            <label for="password">Password</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autocomplete="new-password"
+              required
+              [value]="password()"
+              (input)="onPassword($event)"
+            />
+          </div>
+          <div class="field">
+            <label for="confirm-password">Confirm password</label>
+            <input
+              id="confirm-password"
+              name="confirmPassword"
+              type="password"
+              autocomplete="new-password"
+              required
+              [value]="confirmPassword()"
+              (input)="onConfirmPassword($event)"
+            />
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" [disabled]="submitting()">
+              Claim account
+            </button>
+          </div>
+        </form>
+      }
+    </div>
+  </div>
+</main>
+
+<app-site-footer />

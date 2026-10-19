@@ -1,0 +1,194 @@
+<header class="site-header" role="banner">
+  <div class="header-container">
+    <a
+      routerLink="/"
+      class="brand-link"
+      (click)="closeMobileMenu()"
+      aria-label="Engineers Without Borders Santa Barbara-Ventura Home"
+    >
+      <img
+        src="images/brand/ewb-sbv-square-logo.png"
+        alt="Engineers Without Borders — Santa Barbara Ventura Professional Chapter"
+        class="brand-logo"
+        width="180"
+        height="54"
+      />
+    </a>
+
+    <nav class="desktop-nav" aria-label="Main Navigation">
+      <a routerLink="/" fragment="story" class="nav-link">Chapter Story</a>
+      <a routerLink="/" fragment="expeditions" class="nav-link">Expeditions</a>
+      <a routerLink="/" fragment="approach" class="nav-link">How We Work</a>
+      <a routerLink="/" fragment="get-involved" class="nav-link">Get Involved</a>
+      <a routerLink="/where-we-stand" routerLinkActive="nav-link-active" class="nav-link"
+        >Where We Stand</a
+      >
+      <a routerLink="/events" routerLinkActive="nav-link-active" class="nav-link">Events</a>
+      <a routerLink="/directory" routerLinkActive="nav-link-active" class="nav-link">Directory</a>
+      @if (viewer.canManage()) {
+        <a routerLink="/manage" routerLinkActive="nav-link-active" class="nav-link">Manage</a>
+      }
+      @if (viewer.signedIn() && viewer.hasPerson()) {
+        <a
+          routerLink="/profile"
+          routerLinkActive="nav-link-active"
+          class="account-avatar"
+          aria-label="Your profile"
+          title="Your profile"
+        >
+          @if (viewer.profilePictureUrl(); as picture) {
+            <img [src]="picture" alt="" width="36" height="36" />
+          } @else {
+            <span class="avatar-placeholder" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                <circle cx="12" cy="8" r="3.2" fill="currentColor"></circle>
+                <path
+                  d="M5 19.2c1.4-3 3.8-4.4 7-4.4s5.6 1.4 7 4.4"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                ></path>
+              </svg>
+            </span>
+          }
+        </a>
+      } @else if (viewer.signedIn()) {
+        <a
+          routerLink="/profile"
+          routerLinkActive="nav-link-active"
+          class="nav-link account-link"
+          [attr.title]="viewer.menuLabel()"
+          >{{ viewer.menuLabel() }}</a
+        >
+      } @else if (!viewer.pending()) {
+        <a routerLink="/login" routerLinkActive="nav-link-active" class="nav-link">Sign in</a>
+      }
+    </nav>
+
+    <div class="header-actions">
+      <a
+        href="https://support.ewb-usa.org/campaign/santa-barbara-ventura-professional-chapter/c83736"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-header-cta"
+        >Donate</a
+      >
+      <button
+        type="button"
+        class="mobile-menu-toggle"
+        [attr.aria-expanded]="isMobileMenuOpen()"
+        (click)="toggleMobileMenu()"
+        aria-label="Toggle navigation menu"
+      >
+        <span class="menu-icon" aria-hidden="true">
+          @if (isMobileMenuOpen()) {
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          } @else {
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          }
+        </span>
+      </button>
+    </div>
+  </div>
+
+  @if (isMobileMenuOpen()) {
+    <nav class="mobile-drawer" aria-label="Mobile Navigation">
+      <div class="mobile-nav-links">
+        <a routerLink="/" fragment="story" class="mobile-nav-link" (click)="closeMobileMenu()"
+          >Chapter Story</a
+        >
+        <a routerLink="/" fragment="expeditions" class="mobile-nav-link" (click)="closeMobileMenu()"
+          >Expeditions</a
+        >
+        <a routerLink="/" fragment="approach" class="mobile-nav-link" (click)="closeMobileMenu()"
+          >How We Work</a
+        >
+        <a
+          routerLink="/"
+          fragment="get-involved"
+          class="mobile-nav-link"
+          (click)="closeMobileMenu()"
+          >Get Involved</a
+        >
+        <a routerLink="/where-we-stand" class="mobile-nav-link" (click)="closeMobileMenu()"
+          >Where We Stand</a
+        >
+        <a routerLink="/events" class="mobile-nav-link" (click)="closeMobileMenu()">Events</a>
+        <a routerLink="/directory" class="mobile-nav-link" (click)="closeMobileMenu()">Directory</a>
+        @if (viewer.canManage()) {
+          <a routerLink="/manage" class="mobile-nav-link" (click)="closeMobileMenu()">Manage</a>
+        }
+        @if (viewer.signedIn() && viewer.hasPerson()) {
+          <a
+            routerLink="/profile"
+            class="account-avatar"
+            aria-label="Your profile"
+            title="Your profile"
+            (click)="closeMobileMenu()"
+          >
+            @if (viewer.profilePictureUrl(); as picture) {
+              <img [src]="picture" alt="" width="36" height="36" />
+            } @else {
+              <span class="avatar-placeholder" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                  <circle cx="12" cy="8" r="3.2" fill="currentColor"></circle>
+                  <path
+                    d="M5 19.2c1.4-3 3.8-4.4 7-4.4s5.6 1.4 7 4.4"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                  ></path>
+                </svg>
+              </span>
+            }
+          </a>
+        } @else if (viewer.signedIn()) {
+          <a
+            routerLink="/profile"
+            class="mobile-nav-link account-link"
+            [attr.title]="viewer.menuLabel()"
+            (click)="closeMobileMenu()"
+            >{{ viewer.menuLabel() }}</a
+          >
+        } @else if (!viewer.pending()) {
+          <a routerLink="/login" class="mobile-nav-link" (click)="closeMobileMenu()">Sign in</a>
+        }
+        <a
+          href="https://support.ewb-usa.org/campaign/santa-barbara-ventura-professional-chapter/c83736"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="mobile-cta-btn"
+          (click)="closeMobileMenu()"
+          >Donate</a
+        >
+      </div>
+    </nav>
+  }
+</header>

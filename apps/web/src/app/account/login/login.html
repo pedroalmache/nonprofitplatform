@@ -1,0 +1,66 @@
+<app-site-header />
+
+<main id="main-content" class="login-main">
+  <div class="container">
+    <div class="login-panel">
+      @if (!viewer.ready() || viewer.signedIn()) {
+        <p class="section-label">Chapter account</p>
+        <h1>Sign in</h1>
+        <p class="section-intro">Checking your session.</p>
+      } @else {
+        <p class="section-label">Chapter account</p>
+        <h1>Sign in</h1>
+        <p class="section-intro">Use the email and password for your EWB-SBV account.</p>
+
+        <form class="account-form" (submit)="submit($event)">
+          @if (errorMessage(); as message) {
+            <p class="form-error" role="alert">{{ message }}</p>
+          }
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autocomplete="username"
+              required
+              [value]="email()"
+              (input)="onEmail($event)"
+            />
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              required
+              [value]="password()"
+              (input)="onPassword($event)"
+            />
+          </div>
+
+          <label class="check" for="remember">
+            <input
+              id="remember"
+              name="remember"
+              type="checkbox"
+              [checked]="rememberMe()"
+              (change)="onRemember($event)"
+            />
+            Remember me on this browser
+          </label>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" [disabled]="submitting()">Sign in</button>
+          </div>
+        </form>
+      }
+    </div>
+  </div>
+</main>
+
+<app-site-footer />

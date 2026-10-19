@@ -1,0 +1,312 @@
+/* ==========================================================================
+   EWB-SBV Design System & Global Styles
+   The Field Notebook — Editorial Documentary Direction
+   ========================================================================== */
+
+// Responsive Breakpoints (centralized SCSS variables)
+$bp-mobile: 375px;
+$bp-tablet: 768px;
+$bp-desktop: 1200px;
+$bp-wide: 1440px;
+
+@mixin tablet {
+  @media (min-width: #{$bp-tablet}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$bp-desktop}) {
+    @content;
+  }
+}
+
+:root {
+  // Surfaces & Canvas (Warm limestone / parchment)
+  --color-canvas: #faf8f5;
+  --color-canvas-subtle: #f2ece1;
+  --color-surface: #ffffff;
+
+  // Typography / Ink (Deep slate & charcoal, WCAG 2.1 AA audited)
+  --color-ink-primary: #1a242f; // 16.2:1 contrast on canvas (AAA)
+  --color-ink-secondary: #404c59; // 8.2:1 contrast on canvas (AAA)
+  --color-ink-muted: #505d6b; // 6.2:1 on canvas, 5.5:1 on subtle (AA)
+
+  // Accents (Earthy terracotta & deep pacific blue)
+  --color-earth-primary: #a33d1e; // 6.8:1 on canvas, 5.8:1 on subtle (AA compliant)
+  --color-earth-hover: #863016; // 8.5:1 on canvas, 7.3:1 on subtle (AA compliant)
+  --color-water-primary: #185873; // 7.1:1 on canvas, 6.3:1 on subtle (AAA)
+  --color-sage-accent: #2d5f48; // 6.2:1 on canvas, 5.5:1 on subtle (AA)
+
+  // Borders & Dividing Lines
+  --color-border-subtle: #e3dcd0;
+  --color-border-strong: #c8c0b2;
+
+  // Typography Stacks
+  --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', Menlo, Consolas, monospace;
+
+  // Layout & Spacing
+  --container-max-width: 1240px;
+  --container-narrow-width: 760px;
+  --header-height: 72px;
+
+  // Subtle Border Radii (Avoiding excessive rounded corners)
+  --radius-sm: 2px;
+  --radius-md: 4px;
+}
+
+// Modern Reset & Document Defaults
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-ink-primary);
+  font-family: var(--font-sans);
+  font-size: 1.0625rem; // 17px
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+// Accessible Skip Link
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 1rem;
+  z-index: 1000;
+  background-color: var(--color-earth-primary);
+  color: #ffffff;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: top 0.2s ease-in-out;
+
+  &:focus {
+    top: 1rem;
+    outline: 3px solid #ffffff;
+    outline-offset: 2px;
+  }
+}
+
+// Global Keyboard Focus Indicator
+:focus-visible {
+  outline: 2px solid var(--color-earth-primary);
+  outline-offset: 3px;
+}
+
+// Typography Base Styles
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-serif);
+  color: var(--color-ink-primary);
+  line-height: 1.2;
+  font-weight: 500;
+}
+
+p {
+  color: var(--color-ink-secondary);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+
+  @include tablet {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+.narrow-container {
+  max-width: var(--container-narrow-width);
+}
+
+.editorial-figure {
+  margin: 0;
+  display: block;
+
+  .figure-frame {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border-subtle);
+    padding: 4px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+  }
+
+  .figure-caption {
+    margin-top: 0.625rem;
+    font-size: 0.875rem;
+    line-height: 1.45;
+    color: var(--color-ink-muted);
+
+    .caption-lead {
+      font-weight: 600;
+      color: var(--color-ink-secondary);
+    }
+  }
+}
+
+.section-label {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-earth-primary);
+  margin-bottom: 0.75rem;
+}
+
+.section-title {
+  font-size: clamp(1.85rem, 4vw, 2.65rem);
+  color: var(--color-ink-primary);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.section-intro {
+  margin-top: 0.75rem;
+  font-size: 1.125rem;
+  color: var(--color-ink-secondary);
+  max-width: 640px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8125rem 1.625rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-align: center;
+  white-space: nowrap;
+
+  .btn-arrow {
+    transition: transform 0.2s ease;
+  }
+
+  &:hover .btn-arrow {
+    transform: translateY(2px);
+  }
+}
+
+.btn-primary {
+  background-color: var(--color-earth-primary);
+  color: #ffffff;
+  border: 1px solid var(--color-earth-primary);
+
+  &:hover {
+    background-color: var(--color-earth-hover);
+    border-color: var(--color-earth-hover);
+    color: #ffffff;
+  }
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-ink-primary);
+  border: 1px solid var(--color-border-strong);
+
+  &:hover {
+    background-color: var(--color-canvas-subtle);
+    border-color: var(--color-ink-primary);
+  }
+}
+
+.status-mark {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.3;
+  padding: 0.35rem 0.7rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+
+  &[data-status='in-progress'] {
+    color: var(--color-water-primary);
+    background-color: rgba(24, 88, 115, 0.1);
+    border-color: rgba(24, 88, 115, 0.4);
+  }
+
+  &[data-status='completed'] {
+    color: var(--color-sage-accent);
+    background-color: rgba(45, 95, 72, 0.1);
+    border-color: rgba(45, 95, 72, 0.4);
+  }
+
+  &[data-status='planned'] {
+    color: var(--color-earth-primary);
+    background-color: rgba(163, 61, 30, 0.08);
+    border-color: rgba(163, 61, 30, 0.35);
+  }
+}

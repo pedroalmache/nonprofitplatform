@@ -1,0 +1,46 @@
+<app-site-header />
+
+<main id="main-content" class="stand-main">
+  <div class="container">
+    <header class="stand-header">
+      <p class="section-label">Chapter projects</p>
+      <h1>Where We Stand</h1>
+      <p class="section-intro">
+        Chapter projects grouped as currently in progress, planned, or completed.
+      </p>
+    </header>
+
+    @for (group of groups; track group.status) {
+      <section class="status-group" [attr.aria-labelledby]="'status-' + group.status">
+        <h2 [id]="'status-' + group.status">{{ group.label }}</h2>
+        @if (group.projects.length === 0) {
+          <p class="empty-group">No projects are currently in this category.</p>
+        } @else {
+          <ul class="project-group-list">
+            @for (project of group.projects; track project.slug) {
+              <li>
+                <a class="project-row" [routerLink]="['/projects', project.slug]">
+                  <img
+                    [src]="project.cardPhoto.src"
+                    alt=""
+                    [width]="project.cardPhoto.width"
+                    [height]="project.cardPhoto.height"
+                  />
+                  <span class="project-row-copy">
+                    <span class="status-mark" [attr.data-status]="project.status">{{
+                      statusLabel(project.status)
+                    }}</span>
+                    <span class="project-row-title">{{ project.title }}</span>
+                    <span class="project-row-summary">{{ project.summary }}</span>
+                  </span>
+                </a>
+              </li>
+            }
+          </ul>
+        }
+      </section>
+    }
+  </div>
+</main>
+
+<app-site-footer />
