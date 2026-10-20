@@ -65,11 +65,7 @@ export class Login {
         next: (response) => {
           this.password.set('');
           this.submitting.set(false);
-          this.viewer.noteSignIn(
-            response.username || response.email,
-            response.roles ?? [],
-            response.userId ?? null,
-          );
+          this.viewer.noteSignIn(response.username || response.email, response.roles ?? []);
         },
         error: (error: unknown) => {
           this.password.set('');

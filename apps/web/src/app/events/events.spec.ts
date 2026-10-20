@@ -5,7 +5,6 @@ import { provideRouter } from '@angular/router';
 import { accessTokenStorageKey, accountApiUrl } from '../account/account-api';
 import { authInterceptor } from '../account/auth.interceptor';
 import { eventApiUrl, WebsiteEvent } from '../account/event-api';
-import { personApiUrl } from '../account/person-api';
 import { Events } from './events';
 
 const meeting: WebsiteEvent = {
@@ -88,7 +87,6 @@ describe('Events', () => {
       'Get Involved',
       'Where We Stand',
       'Events',
-      'Directory',
     ];
     const desktop = [...compiled.querySelectorAll('.desktop-nav a')].map((link) =>
       link.textContent?.trim(),
@@ -112,9 +110,6 @@ describe('Events', () => {
       email: 'member@example.org',
       username: 'member@example.org',
       roles: ['member'],
-    });
-    http.match(personApiUrl('/me')).forEach((request) => {
-      request.flush('Not found', { status: 404, statusText: 'Not Found' });
     });
     await Promise.resolve();
     fixture.detectChanges();

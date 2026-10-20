@@ -68,35 +68,6 @@ $bp-desktop: 1200px;
     }
   }
 
-  .account-avatar {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-
-    img,
-    .avatar-placeholder {
-      width: 36px;
-      height: 36px;
-      border: 1px solid var(--color-border-strong);
-      border-radius: 50%;
-    }
-
-    img {
-      object-fit: cover;
-    }
-
-    .avatar-placeholder {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--color-ink-secondary);
-      background-color: var(--color-canvas-subtle);
-    }
-  }
-
   .header-actions {
     display: flex;
     align-items: center;

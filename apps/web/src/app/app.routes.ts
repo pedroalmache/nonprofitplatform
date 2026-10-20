@@ -8,10 +8,6 @@ export const routes: Routes = [
     loadComponent: () => import('./home/home').then((m) => m.Home),
   },
   {
-    path: 'directory',
-    loadComponent: () => import('./directory/directory').then((m) => m.Directory),
-  },
-  {
     path: 'events',
     loadComponent: () => import('./events/events').then((m) => m.Events),
   },
@@ -42,10 +38,5 @@ export const routes: Routes = [
     path: 'manage',
     canActivate: [manageGuard],
     loadComponent: () => import('./account/manage/manage').then((m) => m.Manage),
-  },
-  {
-    path: 'manage/:userId',
-    canActivate: [manageGuard],
-    loadComponent: () => import('./account/profile/profile').then((m) => m.Profile),
   },
 ];

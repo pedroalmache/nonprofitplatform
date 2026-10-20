@@ -61,7 +61,6 @@ describe('authInterceptor', () => {
     const router = TestBed.inject(Router);
     await router.navigateByUrl('/profile');
     const viewer = TestBed.inject(CurrentAccount);
-    viewer.notePerson({ profilePictureUrl: 'https://files.example/face.webp' });
 
     http
       .expectOne(accountApiUrl('/me'))
@@ -75,7 +74,6 @@ describe('authInterceptor', () => {
     expect(localStorage.getItem(accessTokenStorageKey)).toBeNull();
     expect(localStorage.getItem(refreshTokenStorageKey)).toBeNull();
     expect(viewer.signedIn()).toBe(false);
-    expect(viewer.profilePictureUrl()).toBeNull();
     expect(viewer.menuLabel()).toBe('Sign in');
     expect(router.url).toBe('/');
   });

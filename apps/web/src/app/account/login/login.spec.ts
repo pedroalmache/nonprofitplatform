@@ -4,7 +4,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { accessTokenStorageKey, accountApiUrl, refreshTokenStorageKey } from '../account-api';
 import { authInterceptor } from '../auth.interceptor';
-import { personApiUrl } from '../person-api';
 import { Login } from './login';
 
 describe('Login', () => {
@@ -81,9 +80,6 @@ describe('Login', () => {
       username: 'admin@example.org',
       roles: ['admin'],
     });
-    http
-      .expectOne(personApiUrl('/me'))
-      .flush('Not found', { status: 404, statusText: 'Not Found' });
     fixture.detectChanges();
     await fixture.whenStable();
 
@@ -130,16 +126,6 @@ describe('Login with a stored access token', () => {
     const me = http.expectOne(accountApiUrl('/me'));
     expect(me.request.headers.get('Authorization')).toBe('Bearer saved-token');
     me.flush({ email: 'admin@example.org', username: 'admin@example.org', roles: ['admin'] });
-    http.expectOne(personApiUrl('/me')).flush({
-      id: 'person-1',
-      firstName: 'Ada',
-      lastName: 'Lovelace',
-      phone: null,
-      email: null,
-      linkedIn: null,
-      title: null,
-      engineeringType: null,
-    });
     fixture.detectChanges();
     await fixture.whenStable();
 
@@ -149,12 +135,11 @@ describe('Login with a stored access token', () => {
     const links = [...desktop.querySelectorAll('a')];
     const manageIndex = links.findIndex((link) => link.textContent?.trim() === 'Manage');
     const accountIndex = links.findIndex(
-      (link) => link.getAttribute('aria-label') === 'Your profile',
+      (link) => link.textContent?.trim() === 'admin@example.org',
     );
     expect(manageIndex).toBeGreaterThan(-1);
     expect(accountIndex).toBe(manageIndex + 1);
     expect(links[accountIndex]?.getAttribute('href')).toBe('/profile');
-    expect(links[accountIndex]?.querySelector('.avatar-placeholder')).toBeTruthy();
     expect(fixture.nativeElement.textContent).not.toContain('Ada');
     http.verify();
   });
@@ -180,16 +165,6 @@ describe('Login with a stored access token', () => {
       username: 'member@example.org',
       roles: ['member'],
     });
-    http.expectOne(personApiUrl('/me')).flush({
-      id: 'person-1',
-      firstName: 'Ada',
-      lastName: 'Lovelace',
-      phone: null,
-      email: null,
-      linkedIn: null,
-      title: null,
-      engineeringType: null,
-    });
     fixture.detectChanges();
     await fixture.whenStable();
 
@@ -199,7 +174,7 @@ describe('Login with a stored access token', () => {
     );
     expect(manage).toBeUndefined();
     const account = [...desktop.querySelectorAll('a')].find(
-      (link) => link.getAttribute('aria-label') === 'Your profile',
+      (link) => link.textContent?.trim() === 'member@example.org',
     );
     expect(account?.getAttribute('href')).toBe('/profile');
     http.verify();
